@@ -1,0 +1,148 @@
+Version 4.0 HI-TECH Software Intermediate Code
+"60 ./i2c.h
+[; ;./i2c.h: 60:     void I2C_Initialize (void);
+[v _I2C_Initialize `(v ~T0 @X0 0 ef ]
+"63
+[; ;./i2c.h: 63:     void I2C_WriteR8D8 (uint8_t slaveAddr, uint8_t regAddr, uint8_t data);
+[v _I2C_WriteR8D8 `(v ~T0 @X0 0 ef3`uc`uc`uc ]
+"66
+[; ;./i2c.h: 66:     uint8_t I2C_ReadR8D8 (uint8_t slaveAddr, uint8_t regAddr);
+[v _I2C_ReadR8D8 `(uc ~T0 @X0 0 ef2`uc`uc ]
+"72
+[; ;./i2c.h: 72:     uint16_t I2C_ReadR8D16 (uint8_t slaveAddr, uint8_t regAddr);
+[v _I2C_ReadR8D16 `(us ~T0 @X0 0 ef2`uc`uc ]
+"32 snr_tcn75a.c
+[; ;snr_tcn75a.c: 32: uint8_t TEMP_Initialize (void)
+[v _TEMP_Initialize `(uc ~T0 @X0 1 ef ]
+"33
+[; ;snr_tcn75a.c: 33: {
+{
+[e :U _TEMP_Initialize ]
+[f ]
+"34
+[; ;snr_tcn75a.c: 34:     uint8_t configData = 0, returnData = 0;
+[v _configData `uc ~T0 @X0 1 a ]
+[e = _configData -> -> 0 `i `uc ]
+[v _returnData `uc ~T0 @X0 1 a ]
+[e = _returnData -> -> 0 `i `uc ]
+"37
+[; ;snr_tcn75a.c: 37:     I2C_Initialize();
+[e ( _I2C_Initialize ..  ]
+"41
+[; ;snr_tcn75a.c: 41:     configData = (0b01100000) | (0b00011000) ;
+[e = _configData -> | -> 96 `i -> 24 `i `uc ]
+"44
+[; ;snr_tcn75a.c: 44:     I2C_WriteR8D8 ((0x48), (0x01), configData);
+[e ( _I2C_WriteR8D8 (3 , , -> -> 72 `i `uc -> -> 1 `i `uc _configData ]
+"45
+[; ;snr_tcn75a.c: 45:     returnData = I2C_ReadR8D8 ((0x48), (0x01));
+[e = _returnData ( _I2C_ReadR8D8 (2 , -> -> 72 `i `uc -> -> 1 `i `uc ]
+"47
+[; ;snr_tcn75a.c: 47:     return returnData;
+[e ) _returnData ]
+[e $UE 1  ]
+"48
+[; ;snr_tcn75a.c: 48: }
+[e :UE 1 ]
+}
+"53
+[; ;snr_tcn75a.c: 53: uint16_t TEMP_Read (void)
+[v _TEMP_Read `(us ~T0 @X0 1 ef ]
+"54
+[; ;snr_tcn75a.c: 54: {
+{
+[e :U _TEMP_Read ]
+[f ]
+"55
+[; ;snr_tcn75a.c: 55:     uint16_t tmpData = 0;
+[v _tmpData `us ~T0 @X0 1 a ]
+[e = _tmpData -> -> 0 `i `us ]
+"57
+[; ;snr_tcn75a.c: 57:     tmpData = I2C_ReadR8D16 ((0x48), (0x00)) >> 4;
+[e = _tmpData -> >> -> ( _I2C_ReadR8D16 (2 , -> -> 72 `i `uc -> -> 0 `i `uc `ui -> 4 `i `us ]
+"59
+[; ;snr_tcn75a.c: 59:     return tmpData;
+[e ) _tmpData ]
+[e $UE 2  ]
+"60
+[; ;snr_tcn75a.c: 60: }
+[e :UE 2 ]
+}
+"65
+[; ;snr_tcn75a.c: 65: uint8_t TEMP_Calucation (int16_t rTemp)
+[v _TEMP_Calucation `(uc ~T0 @X0 1 ef1`s ]
+"66
+[; ;snr_tcn75a.c: 66: {
+{
+[e :U _TEMP_Calucation ]
+"65
+[; ;snr_tcn75a.c: 65: uint8_t TEMP_Calucation (int16_t rTemp)
+[v _rTemp `s ~T0 @X0 1 r1 ]
+"66
+[; ;snr_tcn75a.c: 66: {
+[f ]
+[v F62 `Cuc ~T0 @X0 -> 16 `i s ]
+[i F62
+:U ..
+"67
+[; ;snr_tcn75a.c: 67:     const uint8_t realScale[16] = { 0,
+-> -> 0 `i `uc
+-> -> 1 `i `uc
+-> -> 1 `i `uc
+-> -> 2 `i `uc
+-> -> 2 `i `uc
+-> -> 3 `i `uc
+-> -> 4 `i `uc
+-> -> 4 `i `uc
+-> -> 5 `i `uc
+-> -> 6 `i `uc
+-> -> 6 `i `uc
+-> -> 7 `i `uc
+-> -> 8 `i `uc
+-> -> 8 `i `uc
+-> -> 9 `i `uc
+-> -> 9 `i `uc
+..
+]
+[v _realScale `Cuc ~T0 @X0 -> 16 `i a ]
+[e = _realScale F62 ]
+"85
+[; ;snr_tcn75a.c: 85:     int8_t tempInt = 0;
+[v _tempInt `c ~T0 @X0 1 a ]
+[e = _tempInt -> -> 0 `i `c ]
+"86
+[; ;snr_tcn75a.c: 86:     uint8_t tempReal = 0, index = 0;
+[v _tempReal `uc ~T0 @X0 1 a ]
+[e = _tempReal -> -> 0 `i `uc ]
+[v _index `uc ~T0 @X0 1 a ]
+[e = _index -> -> 0 `i `uc ]
+"87
+[; ;snr_tcn75a.c: 87:     int16_t tempData = 0;
+[v _tempData `s ~T0 @X0 1 a ]
+[e = _tempData -> -> 0 `i `s ]
+"90
+[; ;snr_tcn75a.c: 90:     if(rTemp > 2047)
+[e $ ! > -> _rTemp `i -> 2047 `i 4  ]
+"91
+[; ;snr_tcn75a.c: 91:             tempData = (rTemp - 4096);
+[e = _tempData -> - -> _rTemp `i -> 4096 `i `s ]
+[e $U 5  ]
+"92
+[; ;snr_tcn75a.c: 92:     else tempData = (int16_t)rTemp;
+[e :U 4 ]
+[e = _tempData _rTemp ]
+[e :U 5 ]
+"95
+[; ;snr_tcn75a.c: 95:     tempInt = (int8_t)(tempData >> 4);
+[e = _tempInt -> >> -> _tempData `i -> 4 `i `c ]
+"96
+[; ;snr_tcn75a.c: 96:     tempReal = realScale[(uint8_t)(tempData & 0x000F)];
+[e = _tempReal *U + &U _realScale * -> -> & -> _tempData `i -> 15 `i `uc `ux -> -> # *U &U _realScale `ui `ux ]
+"97
+[; ;snr_tcn75a.c: 97:     return tempInt;
+[e ) -> _tempInt `uc ]
+[e $UE 3  ]
+"98
+[; ;snr_tcn75a.c: 98: }
+[e :UE 3 ]
+}

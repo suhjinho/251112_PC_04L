@@ -1,0 +1,285 @@
+Version 4.0 HI-TECH Software Intermediate Code
+"14 ./tick_cnt.h
+[; ;./tick_cnt.h: 14:  {
+[s S2 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S2 . Flag_1ms Flag_10ms Flag_100ms Flag_250ms Flag_500ms Flag_1sec ]
+"24
+[; ;./tick_cnt.h: 24:  {
+[s S3 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S3 . _1ms _10ms _20ms _100ms _250ms _500ms _1sec ]
+"5
+[; ;./tick_cnt.h: 5: {
+[s S1 `ui 1 `uc 1 `uc 1 `uc 1 `uc 1 `uc 1 `S2 1 `S3 1 ]
+[n S1 BaseTimerCount Tick_Count_1ms Tick_Count_10ms Tick_Count_100ms Tick_Count_250ms Tick_Count_500ms Tick_Count_1sec Tick Flag ]
+"7 tick_cnt.c
+[; ;tick_cnt.c: 7: void Tick_Count(Time_t *_time)
+[v _Tick_Count `(v ~T0 @X0 1 ef1`*S1 ]
+"8
+[; ;tick_cnt.c: 8: {
+{
+[e :U _Tick_Count ]
+"7
+[; ;tick_cnt.c: 7: void Tick_Count(Time_t *_time)
+[v __time `*S1 ~T0 @X0 1 r1 ]
+"8
+[; ;tick_cnt.c: 8: {
+[f ]
+"9
+[; ;tick_cnt.c: 9:  _time->Flag._1ms = 0;
+[e = . . *U __time 7 0 -> -> 0 `i `uc ]
+"10
+[; ;tick_cnt.c: 10:  _time->Flag._10ms = 0;
+[e = . . *U __time 7 1 -> -> 0 `i `uc ]
+"11
+[; ;tick_cnt.c: 11:  _time->Flag._100ms = 0;
+[e = . . *U __time 7 3 -> -> 0 `i `uc ]
+"12
+[; ;tick_cnt.c: 12:  _time->Flag._250ms = 0;
+[e = . . *U __time 7 4 -> -> 0 `i `uc ]
+"13
+[; ;tick_cnt.c: 13:  _time->Flag._500ms = 0;
+[e = . . *U __time 7 5 -> -> 0 `i `uc ]
+"14
+[; ;tick_cnt.c: 14:  _time->Flag._1sec = 0;
+[e = . . *U __time 7 6 -> -> 0 `i `uc ]
+"16
+[; ;tick_cnt.c: 16:  if(_time->Tick.Flag_1ms) { _time->Flag._1ms = 1; _time->Tick.Flag_1ms = 0; }
+[e $ ! != -> . . *U __time 6 0 `i -> 0 `i 5  ]
+{
+[e = . . *U __time 7 0 -> -> 1 `i `uc ]
+[e = . . *U __time 6 0 -> -> 0 `i `uc ]
+}
+[e :U 5 ]
+"17
+[; ;tick_cnt.c: 17:  if(_time->Tick.Flag_10ms) { _time->Flag._10ms = 1; _time->Tick.Flag_10ms = 0; }
+[e $ ! != -> . . *U __time 6 1 `i -> 0 `i 6  ]
+{
+[e = . . *U __time 7 1 -> -> 1 `i `uc ]
+[e = . . *U __time 6 1 -> -> 0 `i `uc ]
+}
+[e :U 6 ]
+"18
+[; ;tick_cnt.c: 18:  if(_time->Tick.Flag_100ms) { _time->Flag._100ms = 1; _time->Tick.Flag_100ms = 0; }
+[e $ ! != -> . . *U __time 6 2 `i -> 0 `i 7  ]
+{
+[e = . . *U __time 7 3 -> -> 1 `i `uc ]
+[e = . . *U __time 6 2 -> -> 0 `i `uc ]
+}
+[e :U 7 ]
+"19
+[; ;tick_cnt.c: 19:  if(_time->Tick.Flag_250ms) { _time->Flag._250ms = 1; _time->Tick.Flag_250ms = 0; }
+[e $ ! != -> . . *U __time 6 3 `i -> 0 `i 8  ]
+{
+[e = . . *U __time 7 4 -> -> 1 `i `uc ]
+[e = . . *U __time 6 3 -> -> 0 `i `uc ]
+}
+[e :U 8 ]
+"20
+[; ;tick_cnt.c: 20:  if(_time->Tick.Flag_500ms) { _time->Flag._500ms = 1; _time->Tick.Flag_500ms = 0; }
+[e $ ! != -> . . *U __time 6 4 `i -> 0 `i 9  ]
+{
+[e = . . *U __time 7 5 -> -> 1 `i `uc ]
+[e = . . *U __time 6 4 -> -> 0 `i `uc ]
+}
+[e :U 9 ]
+"21
+[; ;tick_cnt.c: 21:  if(_time->Tick.Flag_1sec) { _time->Flag._1sec = 1; _time->Tick.Flag_1sec = 0; }
+[e $ ! != -> . . *U __time 6 5 `i -> 0 `i 10  ]
+{
+[e = . . *U __time 7 6 -> -> 1 `i `uc ]
+[e = . . *U __time 6 5 -> -> 0 `i `uc ]
+}
+[e :U 10 ]
+"22
+[; ;tick_cnt.c: 22: }
+[e :UE 4 ]
+}
+"24
+[; ;tick_cnt.c: 24: void Tick_Count_ISR(Time_t *_time)
+[v _Tick_Count_ISR `(v ~T0 @X0 1 ef1`*S1 ]
+"25
+[; ;tick_cnt.c: 25: {
+{
+[e :U _Tick_Count_ISR ]
+"24
+[; ;tick_cnt.c: 24: void Tick_Count_ISR(Time_t *_time)
+[v __time `*S1 ~T0 @X0 1 r1 ]
+"25
+[; ;tick_cnt.c: 25: {
+[f ]
+"27
+[; ;tick_cnt.c: 27:  _time->Tick_Count_1ms = 0;
+[e = . *U __time 0 -> -> 0 `i `ui ]
+"28
+[; ;tick_cnt.c: 28:  _time->Tick_Count_10ms++;
+[e ++ . *U __time 1 -> -> 1 `i `uc ]
+"29
+[; ;tick_cnt.c: 29:  _time->Tick.Flag_1ms = 1;
+[e = . . *U __time 6 0 -> -> 1 `i `uc ]
+"32
+[; ;tick_cnt.c: 32:  if(_time->Tick_Count_10ms >= 10)
+[e $ ! >= -> . *U __time 1 `i -> 10 `i 12  ]
+"33
+[; ;tick_cnt.c: 33:  {
+{
+"34
+[; ;tick_cnt.c: 34:   _time->Tick_Count_10ms = 0;
+[e = . *U __time 1 -> -> 0 `i `uc ]
+"35
+[; ;tick_cnt.c: 35:   _time->Tick_Count_100ms++;
+[e ++ . *U __time 2 -> -> 1 `i `uc ]
+"36
+[; ;tick_cnt.c: 36:   _time->Tick_Count_250ms++;
+[e ++ . *U __time 3 -> -> 1 `i `uc ]
+"37
+[; ;tick_cnt.c: 37:   _time->Tick.Flag_10ms = 1;
+[e = . . *U __time 6 1 -> -> 1 `i `uc ]
+"38
+[; ;tick_cnt.c: 38:  }
+}
+[e :U 12 ]
+"41
+[; ;tick_cnt.c: 41:  if(_time->Tick_Count_100ms >= 10)
+[e $ ! >= -> . *U __time 2 `i -> 10 `i 13  ]
+"42
+[; ;tick_cnt.c: 42:  {
+{
+"43
+[; ;tick_cnt.c: 43:   _time->Tick_Count_100ms = 0;
+[e = . *U __time 2 -> -> 0 `i `uc ]
+"44
+[; ;tick_cnt.c: 44:   _time->Tick_Count_500ms++;
+[e ++ . *U __time 4 -> -> 1 `i `uc ]
+"45
+[; ;tick_cnt.c: 45:   _time->Tick.Flag_100ms = 1;
+[e = . . *U __time 6 2 -> -> 1 `i `uc ]
+"46
+[; ;tick_cnt.c: 46:  }
+}
+[e :U 13 ]
+"49
+[; ;tick_cnt.c: 49:  if(_time->Tick_Count_250ms >= 25)
+[e $ ! >= -> . *U __time 3 `i -> 25 `i 14  ]
+"50
+[; ;tick_cnt.c: 50:  {
+{
+"51
+[; ;tick_cnt.c: 51:   _time->Tick_Count_250ms = 0;
+[e = . *U __time 3 -> -> 0 `i `uc ]
+"52
+[; ;tick_cnt.c: 52:   _time->Tick.Flag_250ms = 1;
+[e = . . *U __time 6 3 -> -> 1 `i `uc ]
+"53
+[; ;tick_cnt.c: 53:  }
+}
+[e :U 14 ]
+"56
+[; ;tick_cnt.c: 56:  if(_time->Tick_Count_500ms >= 5)
+[e $ ! >= -> . *U __time 4 `i -> 5 `i 15  ]
+"57
+[; ;tick_cnt.c: 57:  {
+{
+"58
+[; ;tick_cnt.c: 58:   _time->Tick_Count_500ms = 0;
+[e = . *U __time 4 -> -> 0 `i `uc ]
+"59
+[; ;tick_cnt.c: 59:   _time->Tick.Flag_500ms = 1;
+[e = . . *U __time 6 4 -> -> 1 `i `uc ]
+"60
+[; ;tick_cnt.c: 60:   _time->Tick_Count_1sec++;
+[e ++ . *U __time 5 -> -> 1 `i `uc ]
+"61
+[; ;tick_cnt.c: 61:  }
+}
+[e :U 15 ]
+"64
+[; ;tick_cnt.c: 64:  if(_time->Tick_Count_1sec >= 2)
+[e $ ! >= -> . *U __time 5 `i -> 2 `i 16  ]
+"65
+[; ;tick_cnt.c: 65:  {
+{
+"66
+[; ;tick_cnt.c: 66:   _time->Tick_Count_1sec = 0;
+[e = . *U __time 5 -> -> 0 `i `uc ]
+"67
+[; ;tick_cnt.c: 67:   _time->Tick.Flag_1sec = 1;
+[e = . . *U __time 6 5 -> -> 1 `i `uc ]
+"68
+[; ;tick_cnt.c: 68:  }
+}
+[e :U 16 ]
+"69
+[; ;tick_cnt.c: 69: }
+[e :UE 11 ]
+}
+"71
+[; ;tick_cnt.c: 71: void Tick_Count_Initialize(Time_t *_time)
+[v _Tick_Count_Initialize `(v ~T0 @X0 1 ef1`*S1 ]
+"72
+[; ;tick_cnt.c: 72: {
+{
+[e :U _Tick_Count_Initialize ]
+"71
+[; ;tick_cnt.c: 71: void Tick_Count_Initialize(Time_t *_time)
+[v __time `*S1 ~T0 @X0 1 r1 ]
+"72
+[; ;tick_cnt.c: 72: {
+[f ]
+"73
+[; ;tick_cnt.c: 73:  _time->Tick.Flag_1ms = 0;
+[e = . . *U __time 6 0 -> -> 0 `i `uc ]
+"74
+[; ;tick_cnt.c: 74:  _time->Tick.Flag_10ms = 0;
+[e = . . *U __time 6 1 -> -> 0 `i `uc ]
+"75
+[; ;tick_cnt.c: 75:  _time->Tick.Flag_100ms = 0;
+[e = . . *U __time 6 2 -> -> 0 `i `uc ]
+"76
+[; ;tick_cnt.c: 76:  _time->Tick.Flag_250ms = 0;
+[e = . . *U __time 6 3 -> -> 0 `i `uc ]
+"77
+[; ;tick_cnt.c: 77:  _time->Tick.Flag_500ms = 0;
+[e = . . *U __time 6 4 -> -> 0 `i `uc ]
+"78
+[; ;tick_cnt.c: 78:  _time->Tick.Flag_1sec = 0;
+[e = . . *U __time 6 5 -> -> 0 `i `uc ]
+"80
+[; ;tick_cnt.c: 80:  _time->Flag._1ms = 0;
+[e = . . *U __time 7 0 -> -> 0 `i `uc ]
+"81
+[; ;tick_cnt.c: 81:  _time->Flag._10ms = 0;
+[e = . . *U __time 7 1 -> -> 0 `i `uc ]
+"82
+[; ;tick_cnt.c: 82:  _time->Flag._100ms = 0;
+[e = . . *U __time 7 3 -> -> 0 `i `uc ]
+"83
+[; ;tick_cnt.c: 83:  _time->Flag._250ms = 0;
+[e = . . *U __time 7 4 -> -> 0 `i `uc ]
+"84
+[; ;tick_cnt.c: 84:  _time->Flag._500ms = 0;
+[e = . . *U __time 7 5 -> -> 0 `i `uc ]
+"85
+[; ;tick_cnt.c: 85:  _time->Flag._1sec = 0;
+[e = . . *U __time 7 6 -> -> 0 `i `uc ]
+"87
+[; ;tick_cnt.c: 87:  _time->Tick_Count_1ms = 0;
+[e = . *U __time 0 -> -> 0 `i `ui ]
+"88
+[; ;tick_cnt.c: 88:  _time->Tick_Count_10ms = 0;
+[e = . *U __time 1 -> -> 0 `i `uc ]
+"89
+[; ;tick_cnt.c: 89:  _time->Tick_Count_100ms = 0;
+[e = . *U __time 2 -> -> 0 `i `uc ]
+"90
+[; ;tick_cnt.c: 90:  _time->Tick_Count_250ms = 0;
+[e = . *U __time 3 -> -> 0 `i `uc ]
+"91
+[; ;tick_cnt.c: 91:  _time->Tick_Count_500ms = 0;
+[e = . *U __time 4 -> -> 0 `i `uc ]
+"92
+[; ;tick_cnt.c: 92:  _time->Tick_Count_1sec = 0;
+[e = . *U __time 5 -> -> 0 `i `uc ]
+"93
+[; ;tick_cnt.c: 93: }
+[e :UE 17 ]
+}
