@@ -1,21 +1,3 @@
-/**
-  Company:
-    Amers Inc.
-
-  File Name:
-    main.c
-
-  Summary:
-    Point Sensor
-
-  Description:
-    This header file provides implementations for driver APIs for all modules selected in the GUI.
-    Generation Information :
-        Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.0
-        Device            :  PIC18F26K40
-        Driver Version    :  2.00
-*/
-
 #include "mcc_generated_files/mcc.h"
 #include "system.h"
 
@@ -52,7 +34,7 @@
 #define TH_MAX_DEFAULT1                 300
 #define THRESHOLD_DEFAULT2              50
 #define TH_MIN_DEFAULT2                 -400//30  //-255
-#define TH_MAX_DEFAULT2                 -70//300   // -175
+#define TH_MAX_DEFAULT2                 -50//300   // -175
 /* </editor-fold> */
 
 
@@ -93,7 +75,7 @@ uint16_t detectTime = 1;
 uint16_t baseline_cor;
 /* </editor-fold> */
 uint16_t Init_time_cnt = 3; // 자동보정 시작 시 3sec, 수동보정 0 으로 설정
-
+uint16_t Init_time_cnt2 = 5; // 자동보정 시작 시 3sec, 수동보정 0 으로 설정
 
 
 /*------------------------------------------------------------------------------
@@ -142,11 +124,27 @@ void main(void)
         }
         else if(Init_time_cnt)
         {
+            
+            if(abs(levelSensor.DV_data) > 10000)
+            {
+        //        printf("DV overflow detected: %d, Calibrating...\n\r", levelSensor.DV_data);
+                referenceCalibration();
+         //       Init_time_cnt = 0;  // 초기화 완료 처리
+            }
             if(TimmingCnt.Flag._1sec)
             {
                 printf("INIT...(%dsec)\n\r", Init_time_cnt);
                 Init_time_cnt--;
-                if(Init_time_cnt == 1) referenceCalibration();
+                Init_time_cnt2--;
+                if(Init_time_cnt == 1) 
+                {
+                    referenceCalibration();
+                }
+                 if(Init_time_cnt2 == 1) 
+                {
+                    referenceCalibration();
+                } 
+                
             }
         }            
         else if(referenceCorrection_time_cnt)
@@ -444,32 +442,41 @@ void Reading_Get_Proc(void) // Mtouch Sensor Data
 
 void monitoringProc(void) // 모티터링 값 출력
 {
-    if((bitMonitoring & BIT_smr) == BIT_smr || (bitMonitoring & BIT_sma) == BIT_sma) printf("RD:%d ", levelSensor.RD_data);
-    if((bitMonitoring & BIT_smb) == BIT_smb || (bitMonitoring & BIT_sma) == BIT_sma) printf("BS:%d ", levelSensor.BS_data);
-    if((bitMonitoring & BIT_smd) == BIT_smd || (bitMonitoring & BIT_sma) == BIT_sma) printf("DV:%d ", levelSensor.DV_data);
-    if((bitMonitoring & BIT_davg) == BIT_davg || (bitMonitoring & BIT_sma) == BIT_sma) printf("DAVG:%d ", RD_avg.fitering_data);
-#if SENSOR_TYPE == 2
-    if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TH:%d ", threMin);
-    if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TM:%d ", threMax);
-#else
-    if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TH:%d ", SensorThreshold);
-#endif    
-    if((bitMonitoring & BIT_smp) == BIT_smp || (bitMonitoring & BIT_sma) == BIT_sma) printf("SE:%d ", sensorStatus);
-    if((bitMonitoring & BIT_smp) == BIT_smp || (bitMonitoring & BIT_sma) == BIT_sma) printf("DE:%d ", DetectLevel);
-    if((bitMonitoring & BIT_tim) == BIT_tim || (bitMonitoring & BIT_sma) == BIT_sma) printf("TI:%d ", temperature_indicator);
-    if((bitMonitoring & BIT_tem) == BIT_tem || (bitMonitoring & BIT_sma) == BIT_sma) printf("TE:%d ", temperature);
-//    if((bitMonitoring & BIT_sma) == BIT_sma || (bitMonitoring & BIT_sma) == BIT_sma) printf("DBG:%d ", fObsolescence);
-    if(bitMonitoring) printf("\n\r");
+    if((levelSensor.DV_data) > 10000)
+    {
+    //        printf("DV overflow detected: %d, Calibrating...\n\r", levelSensor.DV_data);
+        referenceCalibration();
+    //       Init_time_cnt = 0;  // 초기화 완료 처리
+    }
+    else
+    {
+        if((bitMonitoring & BIT_smr) == BIT_smr || (bitMonitoring & BIT_sma) == BIT_sma) printf("RD:%d ", levelSensor.RD_data);
+        if((bitMonitoring & BIT_smb) == BIT_smb || (bitMonitoring & BIT_sma) == BIT_sma) printf("BS:%d ", levelSensor.BS_data);
+        if((bitMonitoring & BIT_smd) == BIT_smd || (bitMonitoring & BIT_sma) == BIT_sma) printf("DV:%d ", levelSensor.DV_data);
+        if((bitMonitoring & BIT_davg) == BIT_davg || (bitMonitoring & BIT_sma) == BIT_sma) printf("DAVG:%d ", RD_avg.fitering_data);
+    #if SENSOR_TYPE == 2
+        if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TH:%d ", threMin);
+        if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TM:%d ", threMax);
+    #else
+        if((bitMonitoring & BIT_smt) == BIT_smt || (bitMonitoring & BIT_sma) == BIT_sma) printf("TH:%d ", SensorThreshold);
+    #endif    
+        if((bitMonitoring & BIT_smp) == BIT_smp || (bitMonitoring & BIT_sma) == BIT_sma) printf("SE:%d ", sensorStatus);
+        if((bitMonitoring & BIT_smp) == BIT_smp || (bitMonitoring & BIT_sma) == BIT_sma) printf("DE:%d ", DetectLevel);
+        if((bitMonitoring & BIT_tim) == BIT_tim || (bitMonitoring & BIT_sma) == BIT_sma) printf("TI:%d ", temperature_indicator);
+        if((bitMonitoring & BIT_tem) == BIT_tem || (bitMonitoring & BIT_sma) == BIT_sma) printf("TE:%d ", temperature);
+    //    if((bitMonitoring & BIT_sma) == BIT_sma || (bitMonitoring & BIT_sma) == BIT_sma) printf("DBG:%d ", fObsolescence);
+        if(bitMonitoring) printf("\n\r");
 
-    /* MPLAB Visualizer streaming */
-//    EUSART1_Write(0x03);
-//    EUSART1_Write(levelSensor.RD_data & 0x00FF);
-//    EUSART1_Write(levelSensor.RD_data>>8);
-//    EUSART1_Write(levelSensor.BS_data & 0x00FF);
-//    EUSART1_Write(levelSensor.BS_data>>8);
-//    EUSART1_Write(levelSensor.DV_data & 0x00FF);
-//    EUSART1_Write(levelSensor.DV_data>>8);
-//    EUSART1_Write(0xFC);
+        /* MPLAB Visualizer streaming */
+    //    EUSART1_Write(0x03);
+    //    EUSART1_Write(levelSensor.RD_data & 0x00FF);
+    //    EUSART1_Write(levelSensor.RD_data>>8);
+    //    EUSART1_Write(levelSensor.BS_data & 0x00FF);
+    //    EUSART1_Write(levelSensor.BS_data>>8);
+    //    EUSART1_Write(levelSensor.DV_data & 0x00FF);
+    //    EUSART1_Write(levelSensor.DV_data>>8);
+    //    EUSART1_Write(0xFC);
+    }
 }
 
 void cmdProc(void) // 시리얼 통신 CMD 응답

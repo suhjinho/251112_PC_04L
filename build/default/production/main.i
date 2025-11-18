@@ -7,7 +7,6 @@
 # 1 "C:/Users/suhji/.mchp_packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\\pic\\include/language_support.h" 1 3
 # 2 "<built-in>" 2
 # 1 "main.c" 2
-# 19 "main.c"
 # 1 "./mcc_generated_files/mcc.h" 1
 # 49 "./mcc_generated_files/mcc.h"
 # 1 "C:/Users/suhji/.mchp_packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\\pic\\include/xc.h" 1 3
@@ -16623,7 +16622,7 @@ void SYSTEM_Initialize(void);
 void OSCILLATOR_Initialize(void);
 # 104 "./mcc_generated_files/mcc.h"
 void PMD_Initialize(void);
-# 20 "main.c" 2
+# 2 "main.c" 2
 # 1 "./system.h" 1
 # 43 "./system.h"
 int eepReadWord(int addr);
@@ -16632,7 +16631,7 @@ void eepWriteWord(int addr, int data);
 
 
 int splitCmd(char *src, int *param1, int *param2);
-# 21 "main.c" 2
+# 3 "main.c" 2
 
 # 1 "./tick_cnt.h" 1
 
@@ -16672,7 +16671,7 @@ typedef struct BaseTimerCount
 void Tick_Count(Time_t *_time);
 void Tick_Count_ISR(Time_t *_time);
 void Tick_Count_Initialize(Time_t *_time);
-# 23 "main.c" 2
+# 5 "main.c" 2
 # 1 "./snr_tcn75a.h" 1
 # 26 "./snr_tcn75a.h"
 # 1 "./i2c.h" 1
@@ -16695,7 +16694,7 @@ void Tick_Count_Initialize(Time_t *_time);
 uint8_t TEMP_Initialize (void);
 uint16_t TEMP_Read (void);
 uint8_t TEMP_Calucation (int16_t rTemp);
-# 24 "main.c" 2
+# 6 "main.c" 2
 
 # 1 "./main.h" 1
 # 24 "./main.h"
@@ -16748,13 +16747,13 @@ void referenceCorrection(void);
 void referenceInit(void);
 void referenceCalibration(void);
 void Reading_Get_Proc(void);
-# 26 "main.c" 2
+# 8 "main.c" 2
 
 #pragma warning disable 520
 #pragma warning disable 2053
 #pragma warning disable 1498
 #pragma warning disable 1510
-# 64 "main.c"
+# 46 "main.c"
 Time_t TimmingCnt;
 int16_t varRegistance;
 uint8_t fRecoveryEnable;
@@ -16787,7 +16786,7 @@ uint16_t detectTime = 1;
 uint16_t baseline_cor;
 
 uint16_t Init_time_cnt = 3;
-
+uint16_t Init_time_cnt2 = 5;
 
 
 
@@ -16823,17 +16822,33 @@ void main(void)
         {
             if(ObsolecenceEnableTimeCnt < 20) ObsolecenceEnableTimeCnt++;
         }
-# 140 "main.c"
+# 122 "main.c"
         if(!Init_time_cnt && !referenceCorrection_time_cnt)
         {
         }
         else if(Init_time_cnt)
         {
+
+            if(abs(levelSensor.DV_data) > 10000)
+            {
+
+                referenceCalibration();
+
+            }
             if(TimmingCnt.Flag._1sec)
             {
                 printf("INIT...(%dsec)\n\r", Init_time_cnt);
                 Init_time_cnt--;
-                if(Init_time_cnt == 1) referenceCalibration();
+                Init_time_cnt2--;
+                if(Init_time_cnt == 1)
+                {
+                    referenceCalibration();
+                }
+                 if(Init_time_cnt2 == 1)
+                {
+                    referenceCalibration();
+                }
+
             }
         }
         else if(referenceCorrection_time_cnt)
@@ -16885,7 +16900,7 @@ void loadInitSetting(void)
 
         SensorThreshold = 50;
         threMin = -400;
-        threMax = -70;
+        threMax = -50;
 
         varObsolescenceOut = -1000;
         referenceTemp = 25;
@@ -17110,7 +17125,7 @@ void Reading_Get_Proc(void)
 
 
     }
-# 436 "main.c"
+# 434 "main.c"
     else
     {
 
@@ -17122,23 +17137,32 @@ void Reading_Get_Proc(void)
 
 void monitoringProc(void)
 {
-    if((bitMonitoring & 0x01) == 0x01 || (bitMonitoring & 0x100) == 0x100) printf("RD:%d ", levelSensor.RD_data);
-    if((bitMonitoring & 0x02) == 0x02 || (bitMonitoring & 0x100) == 0x100) printf("BS:%d ", levelSensor.BS_data);
-    if((bitMonitoring & 0x04) == 0x04 || (bitMonitoring & 0x100) == 0x100) printf("DV:%d ", levelSensor.DV_data);
-    if((bitMonitoring & 0x08) == 0x08 || (bitMonitoring & 0x100) == 0x100) printf("DAVG:%d ", RD_avg.fitering_data);
+    if((levelSensor.DV_data) > 10000)
+    {
 
-    if((bitMonitoring & 0x10) == 0x10 || (bitMonitoring & 0x100) == 0x100) printf("TH:%d ", threMin);
-    if((bitMonitoring & 0x10) == 0x10 || (bitMonitoring & 0x100) == 0x100) printf("TM:%d ", threMax);
+        referenceCalibration();
+
+    }
+    else
+    {
+        if((bitMonitoring & 0x01) == 0x01 || (bitMonitoring & 0x100) == 0x100) printf("RD:%d ", levelSensor.RD_data);
+        if((bitMonitoring & 0x02) == 0x02 || (bitMonitoring & 0x100) == 0x100) printf("BS:%d ", levelSensor.BS_data);
+        if((bitMonitoring & 0x04) == 0x04 || (bitMonitoring & 0x100) == 0x100) printf("DV:%d ", levelSensor.DV_data);
+        if((bitMonitoring & 0x08) == 0x08 || (bitMonitoring & 0x100) == 0x100) printf("DAVG:%d ", RD_avg.fitering_data);
+
+        if((bitMonitoring & 0x10) == 0x10 || (bitMonitoring & 0x100) == 0x100) printf("TH:%d ", threMin);
+        if((bitMonitoring & 0x10) == 0x10 || (bitMonitoring & 0x100) == 0x100) printf("TM:%d ", threMax);
 
 
 
-    if((bitMonitoring & 0x20) == 0x20 || (bitMonitoring & 0x100) == 0x100) printf("SE:%d ", sensorStatus);
-    if((bitMonitoring & 0x20) == 0x20 || (bitMonitoring & 0x100) == 0x100) printf("DE:%d ", DetectLevel);
-    if((bitMonitoring & 0x40) == 0x40 || (bitMonitoring & 0x100) == 0x100) printf("TI:%d ", temperature_indicator);
-    if((bitMonitoring & 0x80) == 0x80 || (bitMonitoring & 0x100) == 0x100) printf("TE:%d ", temperature);
+        if((bitMonitoring & 0x20) == 0x20 || (bitMonitoring & 0x100) == 0x100) printf("SE:%d ", sensorStatus);
+        if((bitMonitoring & 0x20) == 0x20 || (bitMonitoring & 0x100) == 0x100) printf("DE:%d ", DetectLevel);
+        if((bitMonitoring & 0x40) == 0x40 || (bitMonitoring & 0x100) == 0x100) printf("TI:%d ", temperature_indicator);
+        if((bitMonitoring & 0x80) == 0x80 || (bitMonitoring & 0x100) == 0x100) printf("TE:%d ", temperature);
 
-    if(bitMonitoring) printf("\n\r");
-# 473 "main.c"
+        if(bitMonitoring) printf("\n\r");
+# 479 "main.c"
+    }
 }
 
 void cmdProc(void)
@@ -17286,7 +17310,7 @@ void setThresholdLevel(void)
 
 void sensorStatus_refresh(void)
 {
-# 645 "main.c"
+# 652 "main.c"
 }
 
 void showstate(void)
